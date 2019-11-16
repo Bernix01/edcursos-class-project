@@ -3,6 +3,10 @@ import 'package:asistencia/stats.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
+  goToAsistentesDetalle(BuildContext context) {
+    Navigator.of(context).pushNamed('/asistentes');
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -12,7 +16,12 @@ class Home extends StatelessWidget {
             return Container(
               child: Column(
                 children: <Widget>[
-                  Asistentes(cantidad: 23),
+                  Asistentes(
+                    cantidad: 23,
+                    onTap: () {
+                      goToAsistentesDetalle(context);
+                    },
+                  ),
                   Stats(),
                 ],
               ),
@@ -21,11 +30,22 @@ class Home extends StatelessWidget {
             return Container(
               child: Row(
                 children: <Widget>[
-                  Expanded(child: Asistentes(cantidad: 23), flex: 5,),
-                  Expanded(child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Stats(),
-                  ), flex: 10,),
+                  Expanded(
+                    child: Asistentes(
+                      cantidad: 23,
+                      onTap: () {
+                        goToAsistentesDetalle(context);
+                      },
+                    ),
+                    flex: 5,
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Stats(),
+                    ),
+                    flex: 10,
+                  ),
                 ],
               ),
             );

@@ -1,9 +1,11 @@
+import 'package:asistencia/asistentes_detalle.dart';
 import 'package:asistencia/footer.dart';
 import 'package:asistencia/home.dart';
 import 'package:asistencia/login.dart';
 import 'package:asistencia/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:asistencia/content.dart';
+import 'package:permission/permission.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,6 +34,7 @@ class MyApp extends StatelessWidget {
       home: LoginPage(),
       routes: {
         '/home': (context) => MyHomePage(title: "Asistencia"),
+        '/asistentes': (context) => AsistentesDetallePage(),
       },
     );
   }
@@ -103,11 +106,27 @@ class _MyHomePageState extends State<MyHomePage> {
       body: PageView.builder(
         controller: _pageController,
         itemCount: _views.length,
-        onPageChanged: (position) {
+        onPageChanged: (position) async {
           print("$position");
           setState(() {
             _position = position;
           });
+          if (position == 1) {
+            var status =
+                await Permission.getPermissionsStatus([PermissionName.Camera]);
+
+            if (status.first.permissionStatus == PermissionStatus.deny ||
+                status.first.permissionStatus == PermissionStatus.notDecided) {
+              var status2 =
+                  await Permission.requestPermissions([PermissionName.Camera]);
+
+              if (status2.first.permissionStatus == PermissionStatus.deny) {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("Neceisto la camara"),
+                ));
+              }
+            }
+          }
         },
         itemBuilder: (buildContext, position) {
           switch (position) {
