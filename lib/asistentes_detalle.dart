@@ -1,3 +1,4 @@
+import 'package:asistencia/frog.dart';
 import 'package:asistencia/models/asistente.dart';
 import 'package:flutter/material.dart';
 
@@ -80,47 +81,50 @@ class AsistentesDetallePage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Asistentes"),
       ),
-      body: Container(
-          child: FutureBuilder(
-        future: getAsistentesAsync(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              // Esperando a que lleguen los datos
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-              break;
-            case ConnectionState.done:
-              // La espera terminó, verificamos que
-              // existan datos y actualizamos la vista
-              if (snapshot.hasData) {
-                // return ListView(
-                //   children: (snapshot.data as List<AsistenteModel>)
-                //       .map(asistenteWidget)
-                //       .toList(),
-                // );
-                List<AsistenteModel> datos =
-                    snapshot.data as List<AsistenteModel>;
-
-                return ListView.builder(
-                  itemCount: datos.length,
-                  itemBuilder: (context, index) {
-                    AsistenteModel asistente = datos[index];
-                    return asistenteWidget(asistente, context);
-                  },
-                );
-              } else {
+      body: FrogColor(
+        color: Colors.blue,
+        child: Container(
+            child: FutureBuilder(
+          future: getAsistentesAsync(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                // Esperando a que lleguen los datos
                 return Center(
-                  child: Text("No se pudo cargar"),
+                  child: CircularProgressIndicator(),
                 );
-              }
-              break;
-            default:
-              return Center(child: Text("No se pudo cargar"));
-          }
-        },
-      )),
+                break;
+              case ConnectionState.done:
+                // La espera terminó, verificamos que
+                // existan datos y actualizamos la vista
+                if (snapshot.hasData) {
+                  // return ListView(
+                  //   children: (snapshot.data as List<AsistenteModel>)
+                  //       .map(asistenteWidget)
+                  //       .toList(),
+                  // );
+                  List<AsistenteModel> datos =
+                      snapshot.data as List<AsistenteModel>;
+
+                  return ListView.builder(
+                    itemCount: datos.length,
+                    itemBuilder: (context, index) {
+                      AsistenteModel asistente = datos[index];
+                      return asistenteWidget(asistente, context);
+                    },
+                  );
+                } else {
+                  return Center(
+                    child: Text("No se pudo cargar"),
+                  );
+                }
+                break;
+              default:
+                return Center(child: Text("No se pudo cargar"));
+            }
+          },
+        )),
+      ),
     );
   }
 
@@ -130,6 +134,7 @@ class AsistentesDetallePage extends StatelessWidget {
         selected: !asistente.estaPresente,
         onTap: () {
           Scaffold.of(context).showSnackBar(SnackBar(
+            backgroundColor: FrogColor.of(context).color,
             content: Text(
                 "El asistente ${asistente.nombre} ${asistente.estaPresente ? "asistio" : "no asistio"}"),
           ));
